@@ -68,10 +68,12 @@ if (!isset($response) ){
   echo curl_error($curl);
 }
 
+echo $response;
+
 $response = json_decode($response, true);
 
 
-$sql = "SELECT token FROM users WHERE discord_id = " . $response['id'];
+$sql = "SELECT * FROM users WHERE discord_id = " . $response['id'];
 $result = $conn->query($sql);
 
 if ($result->num_rows == 0) {
