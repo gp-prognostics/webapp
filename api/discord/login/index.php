@@ -1,10 +1,13 @@
 <?php
 require_once($_SERVER['DOCUMENT_ROOT'] . '/api/config.php');
 
-$conn = new mysqli($host, $username, $password, $dbname, $port);
-if ($conn->connect_error) {
-  die("Connection failed: " . $conn->connect_error);
-}
+$dsn = "mysql:host=$host;dbname=$dbname;port=$port;charset=utf8";
+$opt = array(
+    PDO::ATTR_ERRMODE            => PDO::ERRMODE_EXCEPTION,
+    PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC
+);
+$pdo = new PDO($dsn, $username, $password, $opt);
+
 
 if (!isset($_GET['code'])) {
   $json = array(
@@ -69,27 +72,38 @@ curl_setopt_array($curl, array(
 $response = curl_exec($curl);
 curl_close($curl);
 
-echo $response;
 $response = json_decode($response, true);
 
 $discord_id = $response['id'];
 $discord_username = $response['global_name'];
 $avatarUrl = $response['avatar'];
 
-$sql = "SELECT * FROM users WHERE discord_id = '$discord_id'";
-$result = $conn->query($sql);
+$connection = 'SELECT * FROM users WHERE discord_id = :discord_id';
+$query = $pdo->prepare($connection);
+$query->execute([
+    'discord_id' => $discord_id
+]);
+$user = $query->fetch(PDO::FETCH_ASSOC);
 
-
-// check if user already exists, it yes return token else create user and return token
-// Token will be "discord_Id + now in UNIX timestamp + random string (16)
-
-if ($result->num_rows > 0) {
-  $token = $result->fetch_assoc()['token'];
+if (!$user) {
+  $sql = 'INSERT INTO users (discord_id, discord_username, avatarUrl) VALUES (:discord_id, :discord_username, :avatarUrl)';
+  $query = $pdo->prepare($sql);
+  $token = hash('sha256', $discord_id . time() . bin2hex(random_bytes(16)));
+  $query->execute([
+      'id' => $discord_id,
+      'token' => $token,
+      'avatarUrl' => $avatarUrl,
+      'username' => $discord_username,
+  ]);
 }
-else{
-  $token = $discord_id . time() . bin2hex(random_bytes(16));
-  $sql = "INSERT INTO users (discord_id, token, username, avatar) VALUES ('$discord_id', '$token', '$discord_username', '$avatarUrl')";
-  $conn->query($sql);
+else {
+  $sql = 'SELECT token FROM users WHERE discord_id = :discord_id';
+  $query = $pdo->prepare($sql);
+  $query->execute([
+      'discord_id' => $discord_id
+  ]);
+  $user = $query->fetch(PDO::FETCH_ASSOC);
+  $token = $user['token'];
 }
 
 echo json_encode(array(
