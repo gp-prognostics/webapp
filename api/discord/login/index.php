@@ -44,11 +44,9 @@ curl_setopt_array($curl, array(
 $response = curl_exec($curl);
 curl_close($curl);
 
-if (!isset($response) ){
+if (!isset($response['access_token']) ){
   echo curl_error($curl);
 }
-
-echo '<script>console.log(' . $response . ');</script>';
 
 $response = json_decode($response, true);
 $token = $response['access_token'];
