@@ -1,4 +1,5 @@
 <?php
+phpinfo();
 
 if (!isset($_GET['code'])) {
   $json = array(
@@ -63,6 +64,7 @@ if (!isset($response) ){
 }
 
 $response = json_decode($response, true);
+
 echo json_encode($response);
 
 ?>
