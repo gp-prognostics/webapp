@@ -1,5 +1,5 @@
 <?php
-  require_once($_SERVER['DOCUMENT_ROOT'] . 'beta.gp-prognostics.fr/api/config.php');
+  require_once($_SERVER['DOCUMENT_ROOT'] . '/api/config.php');
   echo $host;
   echo $port;
   echo $username;
