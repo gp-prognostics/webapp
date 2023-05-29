@@ -50,11 +50,27 @@ if (!isset($response['access_token']) ){
 
 
 $response = json_decode($response, true);
-echo json_encode($response);
 
 $token = $response['access_token'];
 
 $discord_user_url = 'https://discordapp.com/api/users/@me';
 $header = array('Authorization: Bearer ' . $token, 'Content-Type: application/x-www-form-urlencoded');
+
+$curl = curl_init();
+
+curl_setopt_array($curl, array(
+  CURLOPT_URL => $discord_user_url,
+  CURLOPT_RETURNTRANSFER => true,
+  CURLOPT_ENCODING => '',
+  CURLOPT_CUSTOMREQUEST => 'GET',
+  CURLOPT_HTTPHEADER => $header,
+));
+
+$response = curl_exec($curl);
+curl_close($curl);
+
+$response = json_decode($response, true);
+
+echo $response;
 
 ?>
