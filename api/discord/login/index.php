@@ -1,5 +1,10 @@
 <?php
-phpinfo();
+require_once($_SERVER['DOCUMENT_ROOT'] . '/api/config.php');
+
+$conn = new mysqli($host, $username, $password, $dbname, $port);
+if ($conn->connect_error) {
+  die("Connection failed: " . $conn->connect_error);
+}
 
 if (!isset($_GET['code'])) {
   $json = array(
@@ -65,6 +70,28 @@ if (!isset($response) ){
 
 $response = json_decode($response, true);
 
-echo json_encode($response);
+
+$sql = "SELECT * FROM users WHERE discord_id = " . $response['id'];
+$result = $conn->query($sql);
+
+if ($result->num_rows == 0) {
+  $now = date("Y-m-d H:i:s");
+  $randomString = substr(str_shuffle("0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"), 0, 16);
+  $user_token = hash('sha256', $response['id'] + '.' + $now + '.' + $randomString);
+  $sql = "INSERT INTO users (id, token, avatarUrl, username) VALUES (" . $response['id'] . ", '" . $user_token . "', '" . $response['avatar'] . "', '" . $response['global_name'] . "')";
+  $result = $conn->query($sql);
+} else {
+  $sql = "SELECT token FROM users WHERE discord_id = " . $response['id'];
+  $result = $conn->query($sql);
+  $row = $result->fetch_assoc();
+  $user_token = $row['token'];
+}
+
+$data = array(
+  "token" => $user_token,
+  "connected" => true
+);
+
+echo json_encode($data);
 
 ?>
