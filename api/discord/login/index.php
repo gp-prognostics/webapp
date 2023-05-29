@@ -1,24 +1,24 @@
 <?php
 
 if (!isset($_GET['code'])) {
-    $json = array(
-        "status" => "error",
-        "message" => "No code provided"
-    );
-    http_response_code(400);
-    echo json_encode($json);
-    exit();
+  $json = array(
+      "status" => "error",
+      "message" => "No code provided"
+  );
+  http_response_code(400);
+  echo json_encode($json);
+  exit();
 }
 
 $code = $_GET['code'];
 
 $payload = [
-    'code' => $code,
-    'client_id' => '1111955711665127535',
-    'client_secret' => 'fhHNfcMuDa4VaItocUqC7ipqN_CAOKPB',
-    'grant_type' => 'authorization_code',
-    'redirect_uri' => 'https://beta.gp-prognostics.fr/login/',
-    'scope' => 'identify'
+  'code' => $code,
+  'client_id' => '1111955711665127535',
+  'client_secret' => 'fhHNfcMuDa4VaItocUqC7ipqN_CAOKPB',
+  'grant_type' => 'authorization_code',
+  'redirect_uri' => 'https://beta.gp-prognostics.fr/login/',
+  'scope' => 'identify'
 ];
 
 $curl = curl_init();
@@ -36,8 +36,33 @@ curl_setopt_array($curl, array(
 ));
 
 $response = curl_exec($curl);
-
 curl_close($curl);
-echo $response;
+
+if (!isset($response) ){
+  echo curl_error($curl);
+}
+
+$response = json_decode($response, true);
+$token = $response['access_token'];
+
+$discord_user_url = 'https://discordapp.com/api/users/@me';
+$header = array('Authorization: Bearer ' . $token, 'Content-Type: application/x-www-form-urlencoded');
+
+$curl = curl_init();
+curl_setopt_array($curl, array(
+  CURLOPT_URL =>  $discord_user_url,
+  CURLOPT_RETURNTRANSFER => true,
+  CURLOPT_HTTPHEADER => $header
+));
+
+$response = curl_exec($curl);
+curl_close($curl);
+
+if (!isset($response) ){
+  echo curl_error($curl);
+}
+
+$response = json_decode($response, true);
+echo json_encode($response);
 
 ?>
