@@ -1,1 +1,1 @@
-# webapp
+# Web app for GP-Prognostics
