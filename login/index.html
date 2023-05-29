@@ -1,5 +1,5 @@
 <a
-  href="https://discord.com/api/oauth2/authorize?client_id=1111955711665127535&redirect_uri=https%3A%2F%2Fbeta.gp-prognostics.fr%2Flogin&response_type=code&scope=identify"
+  href="https://discord.com/api/oauth2/authorize?client_id=1111955711665127535&redirect_uri=https%3A%2F%2Fbeta.gp-prognostics.fr%2Flogin%2F&response_type=code&scope=identify"
 >
   <button>Login with discord</button>
 </a>
@@ -8,18 +8,12 @@
   var url = new URL(window.location.href);
   var code = url.searchParams.get("code");
   if (code != null) {
-    var xhr = new XMLHttpRequest();
-    xhr.open("POST", "https://beta.gp-prognostics.fr/api/discord/login", true);
-    xhr.setRequestHeader("Content-Type", "application/json");
-    xhr.send(JSON.stringify({ code: code }));
-    xhr.onreadystatechange = function () {
-      if (xhr.readyState === 4) {
-        var response = JSON.parse(xhr.responseText);
-        if (response.status == "success") {
-          window.location.href = "https://beta.gp-prognostics.fr";
-          localStorage.setItem("token", response.token);
-        }
-      }
-    };
+    const url =
+      "https://beta.gp-prognostics.fr/api/discord/login/?code=" + code;
+    const data = async () =>
+      await fetch(url, { headers: { Accept: "application/json" } });
+    const text = data.text();
+
+    console.log(text);
   }
 </script>
