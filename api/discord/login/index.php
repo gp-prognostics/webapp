@@ -1,6 +1,6 @@
 <?php
 
-if (!isset($_GET['code'])) {
+if (!isset($_POST['code'])) {
     $json = array(
         "status" => "error",
         "message" => "No code provided"
@@ -9,7 +9,7 @@ if (!isset($_GET['code'])) {
     exit();
 }
 
-$code = $_GET['code'];
+$code = $_POST['code'];
 
 $payload = [
     'code' => $code,
