@@ -8,6 +8,7 @@
   var url = new URL(window.location.href);
   var code = url.searchParams.get("code");
   if (code != null) {
+    alert("code: " + code);
     const url =
       "https://beta.gp-prognostics.fr/api/discord/login/?code=" + code;
     const data = async () =>
@@ -15,5 +16,7 @@
     const text = data.text();
 
     console.log(text);
+  } else {
+    alert("no code");
   }
 </script>
