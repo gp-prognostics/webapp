@@ -71,7 +71,7 @@ if (!isset($response) ){
 $response = json_decode($response, true);
 
 
-$sql = "SELECT * FROM users WHERE discord_id = " . $response['id'];
+$sql = "SELECT token FROM users WHERE discord_id = " . $response['id'];
 $result = $conn->query($sql);
 
 if ($result->num_rows == 0) {
