@@ -5,6 +5,7 @@ if (!isset($_GET['code'])) {
         "status" => "error",
         "message" => "No code provided"
     );
+    http_response_code(400);
     echo json_encode($json);
     exit();
 }
@@ -19,7 +20,20 @@ $payload = [
     'redirect_uri' => 'https://beta.gp-prognostics.fr/login',
     'scope' => 'identify'
 ];
-
 echo json_encode($payload);
+
+$playload_string = http_build_query($payload);
+$discord_token_url = 'https://discordapp.com/api/oauth2/token';
+
+$ch = curl_init();
+
+curl_setopt($ch, CURLOPT_URL, $discord_token_url);
+curl_setopt($ch, CURLOPT_POST, true);
+curl_setopt($ch, CURLOPT_POSTFIELDS, $playload_string);
+curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+
+$response = curl_exec($ch);
+curl_close($ch);
+echo $response;
 
 ?>
