@@ -50,7 +50,7 @@ if (!isset($response['access_token']) ){
 
 
 $response = json_decode($response, true);
-echo $response;
+echo json_encode($response);
 
 $token = $response['access_token'];
 
