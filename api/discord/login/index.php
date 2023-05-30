@@ -1,13 +1,7 @@
 <?php
 require_once($_SERVER['DOCUMENT_ROOT'] . '/api/config.php');
 
-$dsn = "mysql:host=$host;dbname=$dbname;port=$port;charset=utf8";
-$opt = array(
-    PDO::ATTR_ERRMODE            => PDO::ERRMODE_EXCEPTION,
-    PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC
-);
-$pdo = new PDO($dsn, $username, $password, $opt);
-
+$pdo = new PDO('mysql:host='.$host.';port='.$port.';dbname='.$dbname, $username, $password);
 
 if (!isset($_GET['code'])) {
   $json = array(
@@ -78,32 +72,59 @@ $discord_id = $response['id'];
 $discord_username = $response['global_name'];
 $avatarUrl = $response['avatar'];
 
-$connection = 'SELECT * FROM users WHERE discord_id = :discord_id';
-$query = $pdo->prepare($connection);
+
+// Working code : 
+// $username = "LibeloDebug";
+// $id = "100000000000000000";
+// $avatarUrl = "vod4kdmn30fp3kg";
+// $token = "secretTokenDebug";
+
+// $sql = "INSERT INTO users (username, id, avatarUrl, token) VALUES ('$username', '$id', '$avatarUrl', '$token')";
+
+// $query = $pdo->prepare($sql);
+// $query->execute();
+
+// echo 'Debug data inserted';
+
+
+// Not working code :
+// $connection = 'SELECT * FROM users WHERE discord_id = :discord_id';
+// $query = $pdo->prepare($connection);
+// $query->execute([
+  //     'discord_id' => $discord_id
+  // ]);
+  // $user = $query->fetch(PDO::FETCH_ASSOC);
+  
+  // if (!$user) {
+    //   $sql = 'INSERT INTO users (discord_id, discord_username, avatarUrl) VALUES (:discord_id, :discord_username, :avatarUrl)';
+    //   $query = $pdo->prepare($sql);
+    //   $token = hash('sha256', $discord_id . time() . bin2hex(random_bytes(16)));
+    //   $query->execute([
+      //       'id' => $discord_id,
+      //       'token' => $token,
+      //       'avatarUrl' => $avatarUrl,
+      //       'username' => $discord_username,
+      //   ]);
+      // }
+      // else {
+        //   $sql = 'SELECT token FROM users WHERE discord_id = :discord_id';
+        //   $query = $pdo->prepare($sql);
+        //   $query->execute([
+          //       'discord_id' => $discord_id
+          //   ]);
+          //   $user = $query->fetch(PDO::FETCH_ASSOC);
+          //   $token = $user['token'];
+          // }
+          
+$sql = 'SELECT * FROM users WHERE id = :discord_id';
+$query = $pdo->prepare($sql);
 $query->execute([
-    'discord_id' => $discord_id
+    'id' => $_GET['id']
 ]);
 $user = $query->fetch(PDO::FETCH_ASSOC);
 
-if (!$user) {
-  $sql = 'INSERT INTO users (discord_id, discord_username, avatarUrl) VALUES (:discord_id, :discord_username, :avatarUrl)';
-  $query = $pdo->prepare($sql);
-  $token = hash('sha256', $discord_id . time() . bin2hex(random_bytes(16)));
-  $query->execute([
-      'id' => $discord_id,
-      'token' => $token,
-      'avatarUrl' => $avatarUrl,
-      'username' => $discord_username,
-  ]);
-}
-else {
-  $sql = 'SELECT token FROM users WHERE discord_id = :discord_id';
-  $query = $pdo->prepare($sql);
-  $query->execute([
-      'discord_id' => $discord_id
-  ]);
-  $user = $query->fetch(PDO::FETCH_ASSOC);
-  $token = $user['token'];
+if (!isset($user)){
+  // creare usern
 }
 
 echo json_encode(array(
