@@ -73,61 +73,34 @@ $discord_username = $response['global_name'];
 $avatarUrl = $response['avatar'];
 
 
-// Working code : 
-// $username = "LibeloDebug";
-// $id = "100000000000000000";
-// $avatarUrl = "vod4kdmn30fp3kg";
-// $token = "secretTokenDebug";
-
-// $sql = "INSERT INTO users (username, id, avatarUrl, token) VALUES ('$username', '$id', '$avatarUrl', '$token')";
-
-// $query = $pdo->prepare($sql);
-// $query->execute();
-
-// echo 'Debug data inserted';
-
-
-// Not working code :
-// $connection = 'SELECT * FROM users WHERE discord_id = :discord_id';
-// $query = $pdo->prepare($connection);
-// $query->execute([
-  //     'discord_id' => $discord_id
-  // ]);
-  // $user = $query->fetch(PDO::FETCH_ASSOC);
-  
-  // if (!$user) {
-    //   $sql = 'INSERT INTO users (discord_id, discord_username, avatarUrl) VALUES (:discord_id, :discord_username, :avatarUrl)';
-    //   $query = $pdo->prepare($sql);
-    //   $token = hash('sha256', $discord_id . time() . bin2hex(random_bytes(16)));
-    //   $query->execute([
-      //       'id' => $discord_id,
-      //       'token' => $token,
-      //       'avatarUrl' => $avatarUrl,
-      //       'username' => $discord_username,
-      //   ]);
-      // }
-      // else {
-        //   $sql = 'SELECT token FROM users WHERE discord_id = :discord_id';
-        //   $query = $pdo->prepare($sql);
-        //   $query->execute([
-          //       'discord_id' => $discord_id
-          //   ]);
-          //   $user = $query->fetch(PDO::FETCH_ASSOC);
-          //   $token = $user['token'];
-          // }
-          
-$sql = 'SELECT * FROM users WHERE id = :discord_id';
+$sql = 'SELECT * FROM users WHERE id = :id';
 $query = $pdo->prepare($sql);
 $query->execute([
-    'id' => $_GET['id']
+    'id' => $discord_id
 ]);
 $user = $query->fetch(PDO::FETCH_ASSOC);
 
-if (!isset($user)){
-  // creare usern
+if (!isset($user['token'])){
+  $token = hash('sha256', $discord_id . time() . bin2hex(random_bytes(16)));
+  $username = bin2hex(random_bytes(16));
+  $avatarUrl = bin2hex(random_bytes(16));
+  $sql = 'INSERT INTO users (id, token, username, avatarUrl) VALUES (:id, :token, :username, :avatarUrl)';
+  $query = $pdo->prepare($sql);
+  $query->execute([
+      'id' => $discord_id,
+      'token' => $token,
+      'username' => $discord_username,
+      'avatarUrl' => $avatarUrl
+  ]);
+}
+else {
+  $token = $user['token'];
 }
 
-echo json_encode(array(
-  "status" => "success",
-  "token" => $token
-));
+echo json_encode(
+  array(
+    "status" => "success",
+    "token" => $token
+  )
+);
+?>
