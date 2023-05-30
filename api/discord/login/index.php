@@ -69,7 +69,7 @@ curl_close($curl);
 $response = json_decode($response, true);
 
 $discord_id = $response['id'];
-$discord_username = $response['global_name'];
+$discord_username = isSet($response['global_name']) ? $response['global_name'] : $response['username'];
 $avatarUrl = $response['avatar'];
 
 
