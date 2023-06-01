@@ -47,7 +47,7 @@ if (!isset($response['access_token']) ){
     array(
       "status" => "error",
       "message" => "No access token provided",
-      "response" => $response['access_token']
+      "response" => $response
     )
   );
   exit();
