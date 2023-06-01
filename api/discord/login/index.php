@@ -4,12 +4,13 @@ require_once($_SERVER['DOCUMENT_ROOT'] . '/api/config.php');
 $pdo = new PDO('mysql:host='.$host.';port='.$port.';dbname='.$dbname, $username, $password);
 
 if (!isset($_GET['code'])) {
-  $json = array(
+  http_response_code(400);
+  echo json_encode(
+    array(
       "status" => "error",
       "message" => "No code provided"
+    )
   );
-  http_response_code(400);
-  echo json_encode($json);
   exit();
 }
 
@@ -42,7 +43,13 @@ $response = curl_exec($curl);
 curl_close($curl);
 
 if (!isset($response['access_token']) ){
-  echo curl_error($curl);
+  echo json_encode(
+    array(
+      "status" => "error",
+      "message" => "No access token provided"
+    )
+  );
+  exit();
 }
 
 
