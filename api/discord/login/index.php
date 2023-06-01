@@ -82,8 +82,6 @@ $user = $query->fetch(PDO::FETCH_ASSOC);
 
 if (!isset($user['token'])){
   $token = hash('sha256', $discord_id . time() . bin2hex(random_bytes(16)));
-  $username = bin2hex(random_bytes(16));
-  $avatarUrl = bin2hex(random_bytes(16));
   $sql = 'INSERT INTO users (id, token, username, avatarUrl) VALUES (:id, :token, :username, :avatarUrl)';
   $query = $pdo->prepare($sql);
   $query->execute([
@@ -92,17 +90,24 @@ if (!isset($user['token'])){
       'username' => $discord_username,
       'avatarUrl' => $avatarUrl
   ]);
+  $new = true;
 }
 else {
   $token = $user['token'];
+  $sql = 'UPDATE users SET username = :username, avatarUrl = :avatarUrl WHERE id = :id';
+  $query = $pdo->prepare($sql);
+  $query->execute([
+      'id' => $discord_id,
+      'username' => $discord_username,
+      'avatarUrl' => $avatarUrl
+  ]);
 }
 
 echo json_encode(
   array(
     "status" => "success",
     "token" => $token,
-    "avatarUrl" => $avatarUrl,
-    "response" => $response,
+    "new" => $new
   )
 );
 ?>
