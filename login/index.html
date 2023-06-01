@@ -13,11 +13,18 @@
 
     fetch(url)
       .then((response) => {
-        console.log(response);
         return response.json();
       })
       .then((data) => {
-        console.log("data", data);
+        if (data.status === "success") {
+          window.location.href = window.location.origin;
+        } else {
+          alert(
+            "Error: " +
+              data.message +
+              "\nEssaye une nouvelle fois ou contactez le développeur"
+          );
+        }
       });
   }
 </script>
