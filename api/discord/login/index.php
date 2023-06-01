@@ -46,7 +46,8 @@ if (!isset($response['access_token']) ){
   echo json_encode(
     array(
       "status" => "error",
-      "message" => "No access token provided"
+      "message" => "No access token provided",
+      "response" => $response['access_token']
     )
   );
   exit();
