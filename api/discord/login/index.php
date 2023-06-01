@@ -100,7 +100,9 @@ else {
 echo json_encode(
   array(
     "status" => "success",
-    "token" => $token
+    "token" => $token,
+    "avatarUrl" => $avatarUrl,
+    "response" => $response,
   )
 );
 ?>
