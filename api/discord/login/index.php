@@ -87,7 +87,7 @@ $query->execute([
 $user = $query->fetch(PDO::FETCH_ASSOC);
 
 if (!isset($user['token'])){
-  $token = hash('sha256', $discord_id . time() . bin2hex(random_bytes(16)));
+  $token = hash('sha256', $discord_id . time() . bin2hex(random_bytes(64)));
   $sql = 'INSERT INTO users (id, token, username, avatarUrl) VALUES (:id, :token, :username, :avatarUrl)';
   $query = $pdo->prepare($sql);
   $query->execute([
