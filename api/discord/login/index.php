@@ -54,10 +54,6 @@ if (!isset($response['access_token']) ){
   exit();
 }
 
-
-
-$response = json_decode($response, true);
-
 $token = $response['access_token'];
 
 $discord_user_url = 'https://discordapp.com/api/users/@me';
