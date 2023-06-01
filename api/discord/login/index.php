@@ -107,6 +107,7 @@ else {
       'username' => $discord_username,
       'avatarUrl' => $avatarUrl
   ]);
+  $new = false;
 }
 
 echo json_encode(
