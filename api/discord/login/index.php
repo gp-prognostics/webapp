@@ -41,17 +41,19 @@ curl_setopt_array($curl, array(
 
 $response = curl_exec($curl);
 curl_close($curl);
+$response = json_decode($response, true);
 
 if (!isset($response['access_token']) ){
+  http_response_code(400);
   echo json_encode(
     array(
       "status" => "error",
-      "message" => "No access token provided",
-      "response" => $response
+      "message" => "Code has expired or is invalid",
     )
   );
   exit();
 }
+
 
 
 $response = json_decode($response, true);
