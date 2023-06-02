@@ -6,7 +6,11 @@ $pdo = new PDO('mysql:host='.$host.';port='.$port.';dbname='.$dbname, $username,
 $headers = apache_request_headers();
 $token = $headers['Authorization'];
 
-echo $token;
+echo json_encode(
+    array(
+                $headers
+    )
+);
 die();
 
 $stmt = $pdo->prepare("SELECT username, avatarUrl FROM users WHERE token = :token");
