@@ -6,11 +6,14 @@ $pdo = new PDO('mysql:host='.$host.';port='.$port.';dbname='.$dbname, $username,
 $headers = apache_request_headers();
 $token = $headers['Authorization'];
 
+echo $token;
+die();
+
 $stmt = $pdo->prepare("SELECT username, avatarUrl FROM users WHERE token = :token");
 $stmt->bindParam(':token', $token);
 $stmt->execute();
 $user = $stmt->fetch(PDO::FETCH_ASSOC);
-
+ 
 if ($user) {
     echo json_encode(
         array(
@@ -19,7 +22,9 @@ if ($user) {
         )
     );
 } else {
+    http_response_code(401);
     echo json_encode(array('error' => 'User not found'));
+
 }
 
 
