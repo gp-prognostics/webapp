@@ -16,7 +16,7 @@
 
         fetch(url)
           .then((response) => {
-            alert("response : " + response);
+            alert("response : " + JSON.stringify(response));
             return response.json();
           })
           .then((data) => {
