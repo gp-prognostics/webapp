@@ -2,31 +2,10 @@
   <head>
     <title>GP Prognostics - Redirection vers Discord</title>
     <meta charset="utf-8" />
-    <style>
-      body {
-        background-color: #2c2f33;
-        color: #fff;
-        font-family: "Open Sans", sans-serif;
-        font-size: 16px;
-        line-height: 1.5;
-        margin: 0;
-        padding: 0;
-        text-align: center;
-      }
-
-      h1 {
-        font-size: 2em;
-        font-weight: 400;
-        margin: 0;
-      }
-
-      p {
-        margin: 0;
-      }
-    </style>
+    <link rel="stylesheet" href="style.css" />
   </head>
   <body>
-    <h1>Redirection vers Discord...</h1>
+    <h1>Redirection...</h1>
     <p>Vous allez être redirigé vers Discord pour vous connecter.</p>
     <script>
       var url = new URL(window.location.href);
@@ -37,10 +16,14 @@
 
         fetch(url)
           .then((response) => {
+            alert(response.json());
             return response.json();
           })
           .then((data) => {
             if (data.status === "success") {
+              document.querySelector("p").textContent =
+                "Vous allez être redirigé vers la page d'accueil.";
+              alert(data);
               localStorage.setItem("token", data.token);
               window.location.href = window.location.origin;
             } else {
