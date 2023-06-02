@@ -16,16 +16,18 @@
 
         fetch(url)
           .then((response) => {
+            alert("response : " + response);
             return response.json();
           })
           .then((data) => {
-            console.log(JSON.stringify(data));
+            alert(JSON.stringify(data));
             if (data.status === "success") {
               document.querySelector("p").textContent =
                 "Vous allez être redirigé vers la page d'accueil.";
               localStorage.setItem("token", data.token);
               window.location.href = window.location.origin;
             } else {
+              alert("error : " + data.error);
               window.location.href = window.location.origin + "/login/";
             }
           });
@@ -33,6 +35,7 @@
         window.location.href =
           "https://discord.com/api/oauth2/authorize?client_id=1111955711665127535&redirect_uri=https%3A%2F%2Fbeta.gp-prognostics.fr%2Flogin%2F&response_type=code&scope=identify";
       }
+      alert("code : " + code);
     </script>
   </body>
 </html>
