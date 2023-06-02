@@ -16,10 +16,10 @@
 
         fetch(url)
           .then((response) => {
-            alert(response.json());
             return response.json();
           })
           .then((data) => {
+            console.log(data);
             if (data.status === "success") {
               document.querySelector("p").textContent =
                 "Vous allez être redirigé vers la page d'accueil.";
