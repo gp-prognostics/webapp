@@ -13,17 +13,20 @@
     let token = localStorage.getItem("token");
     let loginText = document.getElementById("loginText");
     if (Math.random() < 0.5) {
-      // call api "api/me" to get user data, with token in header
-      const fakeData = {
-        username: "Sylvain",
-        avatar:
-          "https://cdn.discordapp.com/avatars/1111955711665127535/c33d520e4f4751aa03316c8b39d7dca4.png?size=1024",
-        discriminator: "0001",
-        isAnonym: false,
-      };
+      const data = await fetch("/api/user", {
+        method: "GET",
+        headers: {
+          Authorization: token,
+        },
+      });
 
-      loginText.innerHTML =
-        "Bonjour " + fakeData.username + "#" + fakeData.discriminator + " !";
+      const json = await data.json();
+      if (json.error) {
+        loginText.innerHTML =
+          "<a href='/login'><button>Se connecter avec discord</button></a>";
+      } else {
+        loginText.innerHTML = `<p>Bonjour ${json.username}</p>`;
+      }
     } else {
       loginText.innerHTML =
         "<a href='/login'><button>Se connecter avec discord</button></a>";
