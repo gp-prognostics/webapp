@@ -19,11 +19,10 @@
             return response.json();
           })
           .then((data) => {
-            console.log(data);
+            console.log(JSON.stringify(data));
             if (data.status === "success") {
               document.querySelector("p").textContent =
                 "Vous allez être redirigé vers la page d'accueil.";
-              alert(data);
               localStorage.setItem("token", data.token);
               window.location.href = window.location.origin;
             } else {
