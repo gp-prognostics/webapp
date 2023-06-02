@@ -12,21 +12,24 @@
   <script>
     let token = localStorage.getItem("token");
     let loginText = document.getElementById("loginText");
-    if (Math.random() < 0.5) {
-      const data = await fetch("/api/user", {
+    if (token) {
+      fetch("/api/user", {
         method: "GET",
         headers: {
           Authorization: token,
         },
-      });
-
-      const json = await data.json();
-      if (json.error) {
-        loginText.innerHTML =
-          "<a href='/login'><button>Se connecter avec discord</button></a>";
-      } else {
-        loginText.innerHTML = `<p>Bonjour ${json.username}</p>`;
-      }
+      })
+        .then((response) => {
+          return response.json();
+        })
+        .then((data) => {
+          if (data.error) {
+            loginText.innerHTML =
+              "<a href='/login'><button>Se connecter avec discord</button></a>";
+          } else {
+            loginText.innerHTML = `<p>Bonjour ${data.username}</p>`;
+          }
+        });
     } else {
       loginText.innerHTML =
         "<a href='/login'><button>Se connecter avec discord</button></a>";
