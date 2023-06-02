@@ -12,7 +12,7 @@
   <script>
     let token = localStorage.getItem("token");
     let loginText = document.getElementById("loginText");
-    if (token) {
+    if (token != null) {
       fetch("/api/me", {
         method: "GET",
         headers: {
